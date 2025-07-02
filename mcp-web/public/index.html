@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Query Interface</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="container">
+    <h1>Ask a Question</h1>
+    <textarea id="queryInput" placeholder="Type your query here..."></textarea><br>
+    <button id="sendBtn">Send</button>
+    <div id="response"></div>
+  </div>
+
+  <div id="manualMoveControls">
+    <h3>Move Fruit Manually</h3>
+    <input type="text" id="fruitNameInput" placeholder="Fruit name (e.g. Apple)" />
+    <input type="text" id="targetBoxInput" placeholder="Target box (row, column, attributes)" />
+    <button onclick="handleManualMove()">Move</button>
+  </div>
+  
+
+  <div class="big-box-container">
+    <div class="big-box">
+      attributes
+      <div id="attributesInnerBox" class="inner-box"></div>
+    </div>
+    <div class="big-box">
+      column
+      <div id="columnInnerBox" class="inner-box"></div>
+    </div>
+    <div class="big-box">
+      row
+      <div id="rowInnerBox" class="inner-box"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> 
+  <script src="script.js"></script>
+
+  <!-- Placeholder -->
+  <!-- <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sendBtn = document.getElementById("sendBtn");
+      const queryInput = document.getElementById("queryInput");
+      const responseDiv = document.getElementById("response");
+    
+      // Sample placeholder responses
+      const sampleResponses = {
+        "..": "The capital of _Brazil_ is **Brasília**.",
+        "How does photosynthesis work?": "Photosynthesis is the process by which green plants use sunlight to synthesize nutrients from carbon dioxide and water.",
+        "Give me a summary of World War II": "World War II (1939– 1945) was a global conflict involving major world powers and resulted in significant geopolitical changes.",
+        "What's the difference between HTTP and HTTPS?": "HTTPS is the secure version of HTTP. It uses SSL/TLS to encrypt the connection between browser and server.",
+        "Explain quantum computing in simple terms": "Quantum computing uses qubits instead of bits, allowing it to perform many calculations simultaneously due to superposition and entanglement."
+      };
+    
+      sendBtn.addEventListener("click", () => {
+        const userQuery = queryInput.value.trim();
+    
+        // Clear response area first
+        responseDiv.textContent = "";
+    
+        if (!userQuery) {
+          responseDiv.textContent = "Please enter a query.";
+          return;
+        }
+    
+        // Simulate a slight delay like a real API
+        responseDiv.textContent = "Thinking...";
+        setTimeout(() => {
+          responseDiv.innerHTML = marked.parse(
+            sampleResponses[userQuery] || "Sorry, I don't have an answer for that yet.");
+        }, 1000);
+      });
+    });
+  </script>  -->
+
+</body>
+</html>
