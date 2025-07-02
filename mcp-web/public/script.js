@@ -1,3 +1,45 @@
+const micBtn = document.getElementById("micBtn");
+const queryInput = document.getElementById("queryInput");
+
+
+// Initialize Web Speech API
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+
+if (SpeechRecognition) {
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  micBtn.addEventListener("click", () => {
+    recognition.start();
+    micBtn.textContent = "🎙️ Listening...";
+  });
+
+  recognition.addEventListener("result", (event) => {
+    const transcript = event.results[0][0].transcript.trim();
+    queryInput.value = transcript;
+    micBtn.textContent = "🎤 Speak";
+
+    // Optionally auto-submit after recognition:
+    document.getElementById("sendBtn").click();
+  });
+
+  recognition.addEventListener("end", () => {
+    micBtn.textContent = "🎤 Speak";
+  });
+
+  recognition.addEventListener("error", (event) => {
+    console.error("Speech recognition error:", event.error);
+    micBtn.textContent = "🎤 Speak";
+  });
+} else {
+  micBtn.disabled = true;
+  micBtn.textContent = "🎤 Not supported";
+  console.warn("Web Speech API not supported in this browser.");
+}
+
+
 document.getElementById("sendBtn").addEventListener("click", async () => {
   const queryInput = document.getElementById("queryInput");
   const responseDiv = document.getElementById("response");
@@ -44,8 +86,6 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
     responseDiv.innerHTML = marked.parse("Error: " + err.message);
   }
 });
-
-// let cachedFruits = [];
 
 
 //Fruit Management 
