@@ -6,6 +6,8 @@ const { MCPClient } = require("../mcp-client-typescript/build/index.js");
 
 dotenv.config();
 
+let latestMoveCommand = null;
+
 const app = express();
 const port = process.env.PORT || 3000;
 const MCP_SERVER_SCRIPT = process.env.MCP_SERVER_SCRIPT || path.resolve("path_to_your_mcp_server_script.js");
@@ -25,7 +27,6 @@ async function startMCPClient() {
     process.exit(1);
   }
 }
-
 
 app.post("/query", async (req, res) => {
   if (!mcpClient) {
@@ -61,10 +62,49 @@ app.all("/query", (req, res, next) => {
   }
 });
 
+// Endpoint to receive move commands from MCP server
+app.post("/api/move-fruit", (req, res) => {
+  const { fruitName, targetBox } = req.body;
+  if (!fruitName || !targetBox) {
+    return res.status(400).json({ error: "Missing fruitName or targetBox" });
+  }
+  latestMoveCommand = { fruitName, targetBox };
+  res.json({ status: "ok" });
+});
+
+// Frontend polls this endpoint to receive latest move command
+app.get("/api/move-fruit", (req, res) => {
+  if (latestMoveCommand) {
+    res.json(latestMoveCommand);
+    latestMoveCommand = null; // clear after sending once
+  } else {
+    res.json({});
+  }
+});
+
+const fs = require("fs");
+
+app.get("/fruits", (req, res) => {
+  const fruitsFilePath = path.resolve(__dirname, "assets/fruits.json");
+  fs.readFile(fruitsFilePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading fruits.json:", err);
+      return res.status(500).json({ error: "Failed to read fruits data" });
+    }
+    try {
+      const fruits = JSON.parse(data);
+      res.json({ fruits });
+    } catch (parseErr) {
+      console.error("Error parsing fruits.json:", parseErr);
+      res.status(500).json({ error: "Failed to parse fruits data" });
+    }
+  });
+});
+
+app.use("/assets", express.static("assets"));
 app.use(express.static("public"));
 
 app.listen(port, () => {
   console.log(`MCP Web backend listening at http://localhost:${port}`);
   startMCPClient();
 });
-

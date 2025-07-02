@@ -45,7 +45,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   }
 });
 
-
+// let cachedFruits = [];
 
 
 //Fruit Management 
@@ -140,3 +140,21 @@ function handleManualMove() {
 }
 
 loadFruits();
+
+async function pollForMoveCommands() {
+  try {
+    const res = await fetch("http://localhost:3000/api/move-fruit");
+    if (res.ok) {
+      const { fruitName, targetBox } = await res.json();
+      if (fruitName && targetBox) {
+        moveFruit(fruitName, targetBox);
+      }
+    }
+  } catch (err) {
+    console.error("Polling error:", err);
+  } finally {
+    setTimeout(pollForMoveCommands, 1000); // poll every second
+  }
+}
+
+pollForMoveCommands();
